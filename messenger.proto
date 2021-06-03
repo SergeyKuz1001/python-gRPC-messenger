@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message MessengerMessage {
+    string whoami = 1;
+    string message = 2;
+}
+
+message MessengerReply {}
+
+service Messenger {
+    rpc sayMessage (MessengerMessage) returns (MessengerReply);
+}
