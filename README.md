@@ -1,6 +1,6 @@
 # GRPC-Chat
 
-GRPC-chat is a basic cross-platform p2p messenger, which is implemented as a part of SPbU Software Architecture course
+GRPC-chat is a basic cross-platform p2p messenger, which is implemented as a part of SPbU Software Architecture course.
 
 ## *How to run?*
 
