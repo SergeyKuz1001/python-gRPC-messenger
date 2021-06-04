@@ -10,7 +10,7 @@ import messenger_pb2_grpc
 
 def run():
     host = os.getenv("MESSENGER_SERVER", "localhost")
-    port = "50051"
+    port = "50052"
     channel = grpc.insecure_channel(f"{host}:{port}")
     client = messenger_pb2_grpc.MessengerStub(channel)
     client_name = input("Enter your name: ")

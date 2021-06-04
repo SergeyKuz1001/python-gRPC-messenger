@@ -17,8 +17,8 @@ class Messenger(messenger_pb2_grpc.MessengerServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     messenger_pb2_grpc.add_MessengerServicer_to_server(Messenger(), server)
-    port = "50051"
-    server.add_insecure_port(f"[::]:{port}")
+    port = "50052"
+    server.add_insecure_port(f"0.0.0.0:{port}")
     server.start()
     server.wait_for_termination()
 
