@@ -36,7 +36,3 @@ $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-serv
 2) Launch server on pc and get *server hostname*
 3) Send messages from text field
 
-TODOs:
-1) Name selection UI (for now it's always from Azat..)
-2) Pretty chat UI
-3) Error handling(?)
