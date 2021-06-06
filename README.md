@@ -1,6 +1,8 @@
-# python-gRPC-messenger
+# GRPC-Chat
 
-## How to run?
+GRPC-chat is a basic cross-platform p2p messenger, which is implemented as a part of SPbU Software Architecture course.
+
+## *How to run?*
 
 1)  Build docker-container:
 
@@ -26,7 +28,7 @@ $ docker run --rm -it -p 127.0.0.1:50051:50051/tcp --network messenger-nwk --nam
 $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-server python-grpc python messenger_client.py
 ```
 
-## Android client
+## *Android client*
 
 ### Usage
 
