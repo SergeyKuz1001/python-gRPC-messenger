@@ -3,8 +3,13 @@ import threading
 import datetime
 import messenger_pb2
 import messenger_pb2_grpc
+import PySimpleGUI as sg
 
+
+from ChatMenu import ChatWindow
 from message import Message
+
+
 
 
 class Client:
@@ -27,14 +32,16 @@ class Client:
             print("server already has connected client")
             return
 
+        self.main_window = ChatWindow()
         th = threading.Thread(target=self.get_messages, args=(client, ), daemon=True)
         th.start()
-
+        
         while True:
             try:
-                message = input()
+                message = self.main_window.processing()
                 request = messenger_pb2.MessengerMessage(message=message)
                 client.getMessage(request)
+                self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
                 self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
             except KeyboardInterrupt:
                 client.stopMessaging(messenger_pb2.Empty())
@@ -43,5 +50,5 @@ class Client:
     def get_messages(self, client):
         resp = client.sendMessage(messenger_pb2.Empty())
         for mes in resp:
-            print(mes.message)
+            self.main_window.print(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
             self.messages.append(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
