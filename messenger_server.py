@@ -20,9 +20,9 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         self.client_name = None
         self.messages = []
         self.main_window = None
+        self.stop_event = None
+
         self.serve()
-
-
 
     def startMessaging(self, request, context):
         logging.info(f'got name "{request.name}"')
@@ -38,26 +38,15 @@ class Server(messenger_pb2_grpc.MessengerServicer):
 
     def stopMessaging(self, request, context):
         logging.info('disconnected')
-        self.connected = False
-        self.client_name = None
-        self.messages = []
-        self.main_window.window.close()
-        yield messenger_pb2.Empty()
-        sys.exit()
-
-
-
-        
-        
+        self.stop_event.set()
+        return messenger_pb2.Empty()
         
     def sendMessage(self, request_iterator, context):
-        self.main_window = ChatWindow(self, 'Server')
         while self.connected:
             mes = self.main_window.processing()
             self.main_window.print(Message(mes, self.name, datetime.datetime.now(), 'server'))
             self.messages.append(Message(mes, self.name, datetime.datetime.now(), 'server'))
             yield messenger_pb2.MessengerMessage(message=mes)
-
 
     def getMessage(self, request, context):
         logging.info(f'got message "{request.message}" from {self.client_name}')
@@ -66,11 +55,13 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         return messenger_pb2.Empty()
 
     def serve(self):
-        
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        self.stop_event = threading.Event()
+        server = grpc.server(futures.ThreadPoolExecutor())
         messenger_pb2_grpc.add_MessengerServicer_to_server(self, server)
         port = "50051"
         server.add_insecure_port(f"[::]:{port}")
-        print(f"localhost:{port}")
         server.start()
-        server.wait_for_termination()
+        self.stop_event.wait()
+        self.main_window.window.close()
+        server.stop(None)
+        sys.exit(0)

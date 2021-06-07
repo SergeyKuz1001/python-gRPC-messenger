@@ -11,8 +11,6 @@ from ChatMenu import ChatWindow
 from message import Message
 
 
-
-
 class Client:
     def __init__(self, name, host, port):
         self.name = name
@@ -39,17 +37,18 @@ class Client:
         th.start()
         
         while True:
-                message = self.main_window.processing()
-                try:
-                    request = messenger_pb2.MessengerMessage(message=message)
-                    self.client.getMessage(request)
-                except:
-                    sys.exit()
-                self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
-                self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
+            message = self.main_window.processing()
+            request = messenger_pb2.MessengerMessage(message=message)
+            self.client.getMessage(request, timeout=1)
+            self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
+            self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
 
     def get_messages(self):
         resp = self.client.sendMessage(messenger_pb2.Empty())
-        for mes in resp:
-            self.main_window.print(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
-            self.messages.append(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
+        try:
+            for mes in resp:
+                self.main_window.print(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
+                self.messages.append(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
+        except grpc.RpcError as rpc_error_call:
+            self.main_window.window.close()
+            sys.exit()
