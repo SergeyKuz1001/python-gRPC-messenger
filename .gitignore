@@ -1,4 +1,6 @@
 __pycache__/
+.*
+messenger_pb2*
 # Built application files
 *.apk
 *.aar
