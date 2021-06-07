@@ -24,19 +24,11 @@ Client calls *stopMessaging* when client want to disconnect.
 
 ## *How to run?*
 
-1)  Update `pip`:
+1)  Build project:
 ```
-$ python -m pip install --upgrade pip 
+$ ./build
 ```
-2)  Install requirements:
-```
-$ python -m pip install -r requirements.txt
-```
-3)  Generate python's libraries from `messenger.proto`:
-```
-$ python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. messenger.proto
-```
-4)  Run server ...:
+3)  Run server ...:
 ```
 $ python main.py --mode server --name $server_name
 ```
@@ -47,28 +39,13 @@ $ python main.py --mode client --name $client_name --host $server_host --port $s
 
 ## *How to run via docker?*
 
-1)  Build docker-container:
-
+Run server ...:
 ```
-$ docker build -t python-grpc .
+$ ./run_into_docker server $name $port
 ```
-
-2)  Create network:
-
+... or client:
 ```
-$ docker network create messenger-nwk
-```
-
-3)  Run server:
-
-```
-$ docker run --rm -it -p 127.0.0.1:50051:50051/tcp --network messenger-nwk --name messenger-server python-grpc python messenger_server.py
-```
-
-4)  Run client:
-
-```
-$ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-server python-grpc python messenger_client.py
+$ ./run_into_docker client $name $port
 ```
 
 ## *Android client*
