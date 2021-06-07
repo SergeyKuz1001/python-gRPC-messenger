@@ -1,10 +1,9 @@
 FROM python:3.9.5
 WORKDIR /python-gRPC
-RUN python -m pip install --upgrade pip
+COPY build build
 COPY requirements.txt requirements.txt
-RUN python -m pip install -r requirements.txt
 COPY messenger.proto messenger.proto
-RUN python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. messenger.proto
-COPY messenger_client.py messenger_client.py
-COPY messenger_server.py messenger_server.py
+RUN ./build
+COPY . .
 EXPOSE 50051
+ENV DISPLAY :0

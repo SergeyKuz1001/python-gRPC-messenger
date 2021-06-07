@@ -1,1 +1,2 @@
 grpcio-tools ~= 1.38
+PySimpleGUI ~= 4.43.0

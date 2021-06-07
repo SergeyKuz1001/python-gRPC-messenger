@@ -1,0 +1,36 @@
+#!/bin/bash
+
+mode=$1
+name=$2
+port=$3
+container_name=peer-to-peer-messenger
+network_name=peer-to-peer-messenger-network
+server_name=messenger-server
+container_exists_file=.docker-container
+network_exists_file=.docker-network
+
+if ! [ -f $container_exists_file ]
+then
+    echo "build docker container:"
+    docker build -t $container_name .
+    touch $container_exists_file
+fi
+
+if ! [ -f $network_exists_file ]
+then
+    echo "create docker network:"
+    docker network create $network_name
+    touch $network_exists_file
+fi
+
+if [ "$mode" == "server" ]
+then
+    echo "start server:"
+    docker run --rm -it -p 127.0.0.1:$port:$port/tcp --network $network_name -v /tmp/.X11-unix:/tmp/.X11-unix --name $server_name $container_name python main.py --mode $mode --name $name
+elif [ "$mode" == "client" ]
+then
+    echo "start client:"
+    docker run --rm -it --network $network_name -v /tmp/.X11-unix:/tmp/.X11-unix $container_name python main.py --mode $mode --name $name --host $server_name --port $port
+else
+    echo "error: mode \"$mode\" undefined"
+fi
