@@ -26,10 +26,12 @@ fi
 if [ "$mode" == "server" ]
 then
     echo "start server:"
+    xhost +si:localuser:root
     docker run --rm -it -p 127.0.0.1:$port:$port/tcp --network $network_name -v /tmp/.X11-unix:/tmp/.X11-unix --name $server_name $container_name python main.py --mode $mode --name $name
 elif [ "$mode" == "client" ]
 then
     echo "start client:"
+    xhost +si:localuser:root
     docker run --rm -it --network $network_name -v /tmp/.X11-unix:/tmp/.X11-unix $container_name python main.py --mode $mode --name $name --host $server_name --port $port
 else
     echo "error: mode \"$mode\" undefined"
