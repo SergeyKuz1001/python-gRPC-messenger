@@ -2,6 +2,26 @@
 
 GRPC-chat is a basic cross-platform p2p messenger, which is implemented as a part of SPbU Software Architecture course.
 
+## *Architecture*
+
+There are 4 rpc-methods:
+
+### rpc *getMessage* (MessengerMessage) returns (Empty)
+
+Client calls *getMessage* for sending only message to server. Server returns nothing.
+
+### rpc *sendMessage* (Empty) returns (stream MessengerMessage)
+
+Client calls *sendMessage* for getting stream of messages from server. When next message has created, it is sent throughout stream to client.
+
+### rpc *startMessaging* (MessengerNameRequest) returns (MessengerNameResponse)
+
+Client calls *startMessaging* when it want to connect to server, say its name and receive server's name.
+
+### rpc *stopMessaging* (Empty) returns (Empty)
+
+Client calls *stopMessaging* when client want to disconnect.
+
 ## *How to run?*
 
 1)  Build docker-container:
