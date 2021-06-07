@@ -24,6 +24,29 @@ Client calls *stopMessaging* when client want to disconnect.
 
 ## *How to run?*
 
+1)  Update `pip`:
+```
+$ python -m pip install --upgrade pip 
+```
+2)  Install requirements:
+```
+$ python -m pip install -r requirements.txt
+```
+3)  Generate python's libraries from `messenger.proto`:
+```
+$ python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. messenger.proto
+```
+4)  Run server ...:
+```
+$ python main.py --mode server --name $server_name
+```
+... or client:
+```
+$ python main.py --mode client --name $client_name --host $server_host --port $server_port
+```
+
+## *How to run via docker?*
+
 1)  Build docker-container:
 
 ```
