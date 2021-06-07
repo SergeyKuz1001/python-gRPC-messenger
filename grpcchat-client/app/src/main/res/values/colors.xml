@@ -33,7 +33,11 @@
     <color name="deep_orange">#FF5722</color>
     <color name="brown">#795548</color>
     <color name="grey">#E0E0E0</color>
-
+    <color name="rainbow_red">#F23F76</color>
+    <color name="rainbow_yellow">#f9ba15</color>
+    <color name="rainbow_green">#C1DF33</color>
+    <color name="rainbow_blue">#45ADCA</color>
+    <color name="rainbow_purple">#785EA5</color>
     <color name="white_70">#B3FFFFFF</color>
     <color name="cyan_50">#E0F7FA</color>
     <color name="amber_50">#FFF8E1</color>

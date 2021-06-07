@@ -11,7 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.azaat.UIHelpers.RainbowTextView;
 import com.google.common.io.LineReader;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class ApplicationInterface {
@@ -22,16 +26,16 @@ public class ApplicationInterface {
     private final EditText portEdit;
     private final EditText nameEdit;
     private final EditText messageEdit;
-    private final TextView resultText;
+    private final RainbowTextView resultText;
 
 //    private final Button connectButton;
     private final LinearLayout overlayLayout;
     private final LinearLayout chatLayout;
-    private final TextView connectRes;
 
     private void addMessage(String msg, String name) {
         // append the new string
-        resultText.append(name + " : " + msg + "\n");
+        String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+        resultText.append(timeStamp  + " | " + name + " : " + msg + "\n");
         // find the amount we need to scroll.  This works by
         // asking the TextView's internal layout for the position
         // of the final line and then subtracting the TextView's height
@@ -50,9 +54,8 @@ public class ApplicationInterface {
         portEdit = (EditText) context.findViewById(R.id.port_edit_text);
         overlayLayout = (LinearLayout) context.findViewById(R.id.overlay);
         messageEdit = (EditText) context.findViewById(R.id.message_edit_text);
-        resultText = (TextView) context.findViewById(R.id.grpc_response_text);
+        resultText = (RainbowTextView) context.findViewById(R.id.grpc_response_text);
         chatLayout = (LinearLayout) context.findViewById(R.id.chat_layout);
-        connectRes = (TextView) context.findViewById(R.id.connect_result);
         nameEdit = (EditText) context.findViewById(R.id.name_edit_text);
         connectButton = (Button) context.findViewById(R.id.connect_button);
         resultText.setMovementMethod(new ScrollingMovementMethod());
@@ -76,8 +79,16 @@ public class ApplicationInterface {
         sendButton.setEnabled(false);
         String msg = messageEdit.getText().toString();
         messageEdit.setText("");
-        addMessage(msg, context.getNameStr());
         return msg;
+    }
+
+    public void onMessageSent(String msg) {
+        addMessage(msg, context.getNameStr());
+    }
+
+    public void onRequestFailed() {
+        Toast.makeText(context, "Couldn't connect to server..",
+                Toast.LENGTH_LONG).show();
     }
 
     public void onReceiveMessage(String msg) {
@@ -85,8 +96,8 @@ public class ApplicationInterface {
     }
 
     public void onConnectFailed() {
-        Toast.makeText(context, "Couldn't connect to server..",
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Disconnected",
+                Toast.LENGTH_SHORT).show();
         connectButton.setEnabled(true);
     }
 

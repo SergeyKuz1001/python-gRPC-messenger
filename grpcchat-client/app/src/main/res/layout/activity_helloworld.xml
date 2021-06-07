@@ -14,13 +14,12 @@
         android:orientation="vertical"
         android:weightSum="2"
         tools:context=".ClientActivity">
-        <TextView
+        <com.azaat.UIHelpers.RainbowTextView
             android:id="@+id/grpc_response_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.95"
             android:scrollbars="vertical"
-            android:textColor="@color/light_blue"
             android:textSize="20sp" />
         <EditText
             android:id="@+id/message_edit_text"
