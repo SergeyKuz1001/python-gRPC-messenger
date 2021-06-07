@@ -30,6 +30,9 @@ $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-serv
 
 ## *Android client*
 
+### Screenshots
+<img src="https://imgur.com/EV34VRa.png" width="300">
+
 ### Usage
 
 1) Install [the client](./client.apk)
