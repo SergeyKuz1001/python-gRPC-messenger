@@ -59,3 +59,7 @@ $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-serv
 2) Launch server on pc and get *server hostname*
 3) Send messages from text field
 
+### Architecture
+
+- ```ClientActivity``` duplicates logic from python client
+- ```ApplicationInterface``` provides calls for various client events, which perform the required UI modifications (```onDisconnect```, ```onConnectionInitiated```)
