@@ -32,7 +32,7 @@ $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-serv
 
 ### Usage
 
-1) Build Android Studio project and install the app
+1) Install [the client](./client.apk)
 2) Launch server on pc and get *server hostname*
 3) Send messages from text field
 
