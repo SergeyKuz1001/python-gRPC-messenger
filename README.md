@@ -63,3 +63,4 @@ $ docker run --rm -it --network messenger-nwk -e MESSENGER_SERVER=messenger-serv
 
 - ```ClientActivity``` duplicates logic from python client
 - ```ApplicationInterface``` provides calls for various client events, which perform the required UI modifications (```onDisconnect```, ```onConnectionInitiated```)
+  - The app has two layouts (connection and chat layout). When disconnected, it switches to connection layout and waits for user login
