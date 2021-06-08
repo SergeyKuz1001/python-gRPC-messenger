@@ -5,7 +5,7 @@ import threading
 import datetime
 import messenger_pb2
 import messenger_pb2_grpc
-import sys
+import os
 import PySimpleGUI as sg
 
 
@@ -38,6 +38,7 @@ class Server(messenger_pb2_grpc.MessengerServicer):
 
     def stopMessaging(self, request, context):
         logging.info('disconnected')
+        self.connected = False
         self.stop_event.set()
         return messenger_pb2.Empty()
         
@@ -64,4 +65,6 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         self.stop_event.wait()
         self.main_window.window.close()
         server.stop(None)
-        sys.exit(0)
+        if not self.connected:
+            sg.popup_ok("Client disconnected", keep_on_top = True)
+        os._exit(0)

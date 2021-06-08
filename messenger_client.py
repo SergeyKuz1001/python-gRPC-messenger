@@ -1,5 +1,6 @@
 import grpc
 import threading
+import os
 import sys
 import datetime
 import messenger_pb2
@@ -37,12 +38,14 @@ class Client:
         th.start()
         
         while True:
-            message = self.main_window.processing()
-            request = messenger_pb2.MessengerMessage(message=message)
-            self.client.getMessage(request, timeout=1)
-            self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
-            self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
+                message = self.main_window.processing()
+                request = messenger_pb2.MessengerMessage(message=message)
+                self.client.getMessage(request, timeout=1)
+                self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
+                self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
+ 
 
+                
     def get_messages(self):
         resp = self.client.sendMessage(messenger_pb2.Empty())
         try:
@@ -51,4 +54,5 @@ class Client:
                 self.messages.append(Message(mes.message, self.server_name, datetime.datetime.now(), 'server'))
         except grpc.RpcError as rpc_error_call:
             self.main_window.window.close()
-            sys.exit()
+            sg.popup_ok("Server dropped connection", keep_on_top = True)
+            os.exit(0)
