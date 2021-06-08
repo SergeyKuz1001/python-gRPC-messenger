@@ -63,8 +63,8 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         server.add_insecure_port(f"[::]:{port}")
         server.start()
         self.stop_event.wait()
-        self.main_window.window.close()
         server.stop(None)
+        self.main_window.window.close()
         if not self.connected:
             sg.popup_ok("Client disconnected", keep_on_top = True)
         os._exit(0)

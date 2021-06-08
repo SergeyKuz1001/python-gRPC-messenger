@@ -29,9 +29,12 @@ class ChatWindow:
             event, values = self.window.read()
 
             if event == 'Send':
-                return values['-IN-']
-
-            if event == sg.WIN_CLOSED or event == 'Exit':
+                val = values['-IN-']
+                self.window['-IN-'].update('')
+                if val:
+                    return val
+            
+            if event == '_EXIT_' or event == 'Exit' or event == sg.WIN_CLOSED:
                 if self.app.__class__.__name__ == 'Client':
                     res = self.app.client.stopMessaging(messenger_pb2.Empty())
                     self.window.close()
@@ -43,3 +46,4 @@ class ChatWindow:
 
             if event == 'Clear':
                 self.window['-OUTPUT-'].update('')
+

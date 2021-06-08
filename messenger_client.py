@@ -43,7 +43,7 @@ class Client:
             self.client.getMessage(request, timeout=1)
             self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
             self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
-                
+                 
     def get_messages(self):
         resp = self.client.sendMessage(messenger_pb2.Empty())
         try:
