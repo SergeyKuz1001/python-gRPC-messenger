@@ -38,13 +38,11 @@ class Client:
         th.start()
         
         while True:
-                message = self.main_window.processing()
-                request = messenger_pb2.MessengerMessage(message=message)
-                self.client.getMessage(request, timeout=1)
-                self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
-                self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
- 
-
+            message = self.main_window.processing()
+            request = messenger_pb2.MessengerMessage(message=message)
+            self.client.getMessage(request, timeout=1)
+            self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))
+            self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
                 
     def get_messages(self):
         resp = self.client.sendMessage(messenger_pb2.Empty())
