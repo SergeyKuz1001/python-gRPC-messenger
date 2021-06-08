@@ -19,6 +19,7 @@ class ChatWindow:
         self.name = name
         self.app = app
         self.window = sg.Window(self.name, layout, size=(1024,768), finalize=True)
+        self.window.Element('-OUTPUT-').TKOut.output.bind("<Key>", lambda e: "break")
 
     def print(self, msg):
         print(msg.time.strftime("%D,  %H:%M"), msg.name, ">", msg.message)
