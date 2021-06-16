@@ -21,8 +21,7 @@ message MessengerNameResponse {
 }
 
 service Messenger {
-    rpc getMessage (MessengerMessage) returns (Empty);
-    rpc sendMessage (Empty) returns (stream MessengerMessage);
+    rpc sendMessage (stream MessengerMessage) returns (stream MessengerMessage);
     rpc startMessaging (MessengerNameRequest) returns (MessengerNameResponse);
     rpc stopMessaging (Empty) returns (Empty);
 }
