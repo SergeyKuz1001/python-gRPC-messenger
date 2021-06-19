@@ -16,7 +16,6 @@
 
 package com.azaat.grpcchatclient;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,27 +23,25 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-//import io.grpc.examples.helloworld.GreeterGrpc;
-//import io.grpc.examples.helloworld.HelloReply;
-//import io.grpc.examples.helloworld.HelloRequest;
-
-//import java.io.PrintWriter;
-//import java.io.StringWriter;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
 public class ClientActivity extends AppCompatActivity {
+    private static final int REQUEST_DEADLINE_MS = 1000;
+    private static final int TERMINATION_TIMEOUT_S = 1;
+    private static final String TAG = "ClientActivity";
     private ApplicationInterface applicationInterface;
+    private String nameStr;
+    private String serverName;
+    private Thread incomingMsgHandler;
+    private ManagedChannel channel;
 
     public String getServerName() {
         return serverName;
@@ -54,17 +51,10 @@ public class ClientActivity extends AppCompatActivity {
         return nameStr;
     }
 
-    private static final int deadlineMs = 1000;
-    private static final String TAG = "ClientActivity";
-    private String nameStr;
-    private String serverName;
-    private Thread incomingMsgHandler;
-    private ManagedChannel channel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_helloworld);
+        setContentView(R.layout.client_activity);
         applicationInterface = new ApplicationInterface(this);
     }
 
@@ -96,12 +86,13 @@ public class ClientActivity extends AppCompatActivity {
         FutureTask<Integer> disconnectionTask = new FutureTask<>(
                 () -> {
                     MessengerGrpc.MessengerBlockingStub stub = MessengerGrpc.newBlockingStub(channel);
-                    try { MessengerProto.Empty result = stub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS)
-                            .stopMessaging(MessengerProto.Empty.newBuilder().build());  }
-                    catch (io.grpc.StatusRuntimeException e) {
+                    try {
+                        MessengerProto.Empty result = stub.withDeadlineAfter(REQUEST_DEADLINE_MS, TimeUnit.MILLISECONDS)
+                                .stopMessaging(MessengerProto.Empty.newBuilder().build());
+                    } catch (io.grpc.StatusRuntimeException e) {
                         Log.d(TAG, "Exceeded disconnection deadline, server might be down");
                     }
-                    channel.shutdownNow().awaitTermination(1, TimeUnit.SECONDS);
+                    channel.shutdownNow().awaitTermination(TERMINATION_TIMEOUT_S, TimeUnit.SECONDS);
                     channel = null;
                     incomingMsgHandler.interrupt();
                     runOnUiThread(
@@ -123,6 +114,32 @@ public class ClientActivity extends AppCompatActivity {
                 );
     }
 
+    /**
+     * Blocking call, should be used in a separate thread
+     *
+     * @param stub gRPC client object
+     */
+    private void getMessages(MessengerGrpc.MessengerBlockingStub stub) {
+        try {
+            Iterator<MessengerProto.MessengerMessage> result = stub.sendMessage(MessengerProto.Empty.newBuilder().build());
+
+            do {
+                // Trying to get the next message from server
+                MessengerProto.MessengerMessage msg = result.next();
+                runOnUiThread(
+                        () -> applicationInterface.onReceiveMessage(msg.getMessage())
+                );
+            } while (result.hasNext());
+        } catch (io.grpc.StatusRuntimeException e) {
+            Log.d(TAG, "Failed rpc request");
+            runOnUiThread(
+                    () -> {
+                        applicationInterface.onRequestFailed();
+                    }
+            );
+        }
+    }
+
     private static class GrpcTask extends AsyncTask<String, Void, String> {
         private final WeakReference<ClientActivity> activityReference;
         private final ManagedChannel channel;
@@ -139,7 +156,8 @@ public class ClientActivity extends AppCompatActivity {
                 MessengerGrpc.MessengerBlockingStub stub = MessengerGrpc.newBlockingStub(channel);
                 MessengerProto.MessengerMessage request = MessengerProto.MessengerMessage
                         .newBuilder().setMessage(message).build();
-                MessengerProto.Empty result = stub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS).getMessage(request);
+                // Perform gRPC request to send message with specified timeout
+                MessengerProto.Empty result = stub.withDeadlineAfter(REQUEST_DEADLINE_MS, TimeUnit.MILLISECONDS).getMessage(request);
                 return message;
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.d(TAG, "Failed rpc request");
@@ -153,33 +171,11 @@ public class ClientActivity extends AppCompatActivity {
             if (activity == null) {
                 return;
             }
-            Button sendButton = (Button) activity.findViewById(R.id.send_button);
-            sendButton.setEnabled(true);
             if (result != null) {
                 activity.applicationInterface.onMessageSent(result);
             } else {
                 activity.applicationInterface.onRequestFailed();
             }
-        }
-    }
-
-    private void getMessages(MessengerGrpc.MessengerBlockingStub stub) {
-        try {
-            Iterator<MessengerProto.MessengerMessage> result = stub.sendMessage(MessengerProto.Empty.newBuilder().build());
-
-            do {
-                MessengerProto.MessengerMessage msg = result.next();
-                runOnUiThread(
-                        () -> applicationInterface.onReceiveMessage(msg.getMessage())
-                );
-            } while (result.hasNext());
-        } catch (io.grpc.StatusRuntimeException e) {
-            Log.d(TAG, "Failed rpc request");
-            runOnUiThread(
-                    () -> {
-                        applicationInterface.onRequestFailed();
-                    }
-            );
         }
     }
 
@@ -207,7 +203,8 @@ public class ClientActivity extends AppCompatActivity {
             MessengerProto.MessengerNameRequest request = MessengerProto.MessengerNameRequest
                     .newBuilder().setName(nameStr).build();
             try {
-                return stub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS).startMessaging(request);
+                // Perform gRPC request to initiate connection
+                return stub.withDeadlineAfter(REQUEST_DEADLINE_MS, TimeUnit.MILLISECONDS).startMessaging(request);
             } catch (io.grpc.StatusRuntimeException e) {
                 Log.d(TAG, "Failed rpc request");
                 return null;
