@@ -8,7 +8,7 @@ import messenger_pb2_grpc
 import PySimpleGUI as sg
 
 
-from ChatMenu import ChatWindow
+from chat_window import ChatWindow
 from message import Message
 
 
@@ -39,6 +39,9 @@ class Client:
         
         while True:
             message = self.main_window.processing()
+            if message is None:
+                self.client.stopMessaging(messenger_pb2.Empty())
+                self.main_window.window.close()
             request = messenger_pb2.MessengerMessage(message=message)
             self.client.getMessage(request, timeout=1)
             self.main_window.print(Message(message, self.name, datetime.datetime.now(), 'client'))

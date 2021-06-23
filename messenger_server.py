@@ -9,7 +9,7 @@ import os
 import PySimpleGUI as sg
 
 
-from ChatMenu import ChatWindow
+from chat_window import ChatWindow
 from message import Message
 
 
@@ -45,6 +45,9 @@ class Server(messenger_pb2_grpc.MessengerServicer):
     def sendMessage(self, request_iterator, context):
         while self.connected:
             mes = self.main_window.processing()
+            if mes is None:
+                    self.main_window.window.close()
+                    self.stop_event.set()
             self.main_window.print(Message(mes, self.name, datetime.datetime.now(), 'server'))
             self.messages.append(Message(mes, self.name, datetime.datetime.now(), 'server'))
             yield messenger_pb2.MessengerMessage(message=mes)

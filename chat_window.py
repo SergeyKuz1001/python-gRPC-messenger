@@ -35,13 +35,6 @@ class ChatWindow:
                     return val
             
             if event == '_EXIT_' or event == 'Exit' or event == sg.WIN_CLOSED:
-                if self.app.__class__.__name__ == 'Client':
-                    res = self.app.client.stopMessaging(messenger_pb2.Empty())
-                    self.window.close()
-                else:
-                    self.window.close()
-                    self.app.stop_event.set()
-
                 return
 
             if event == 'Clear':
