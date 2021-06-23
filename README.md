@@ -59,7 +59,7 @@ $ ./run_into_docker client $name $port
 2) Launch server on pc and get *server hostname*
 3) Send messages from text field
 
-### Architecture
+### Client architecture details
 
 - ```ClientActivity``` duplicates logic from python client
 - ```ApplicationInterface``` provides calls for various client events, which perform the required UI modifications (```onDisconnect```, ```onConnectionInitiated```)
