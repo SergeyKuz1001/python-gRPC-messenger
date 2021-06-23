@@ -29,8 +29,13 @@ android:
 
 before_install:
   - yes | sdkmanager "platforms;android-28"
+  - pwd
+  - cd grpcchat-client
+  - ls -la
+  - chmod +x ./gradlew
 
 script: 
-  - ./grpcchat-client/gradlew assembleRelease
-  - ./grpcchat-client/gradlew assembleDebug
-  - ./grpcchat-client/gradlew test
+  - ls -la
+  - gradlew assembleRelease
+  - gradlew assembleDebug
+  - gradlew test
