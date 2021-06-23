@@ -4,7 +4,7 @@ GRPC-chat is a basic cross-platform p2p messenger, which is implemented as a par
 
 ## *Architecture*
 
-[Class diagram](./grpc.png)
+![Class diagram](./grpc.png)
 
 There are 4 rpc-methods:
 
