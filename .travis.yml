@@ -36,6 +36,6 @@ before_install:
 
 script: 
   - ls -la
-  - gradlew assembleRelease
-  - gradlew assembleDebug
-  - gradlew test
+  - ./gradlew assembleRelease
+  - ./gradlew assembleDebug
+  - ./gradlew test
