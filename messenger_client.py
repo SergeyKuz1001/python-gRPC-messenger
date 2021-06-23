@@ -22,6 +22,7 @@ class Client:
         self.run(host, port)
 
     def run(self, host, port):
+        """ creates stub and chat gui. Then receives messages and send them to server """
         channel = grpc.insecure_channel(f"{host}:{port}")
         self.client = messenger_pb2_grpc.MessengerStub(channel)
 
@@ -48,6 +49,7 @@ class Client:
             self.messages.append(Message(message, self.name, datetime.datetime.now(), 'client'))
                  
     def get_messages(self):
+        """ receives messages from server and transfer to gui """
         resp = self.client.sendMessage(messenger_pb2.Empty())
         try:
             for mes in resp:
