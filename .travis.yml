@@ -31,6 +31,6 @@ before_install:
   - yes | sdkmanager "platforms;android-28"
 
 script: 
-  - ./gradlew assembleRelease
-  - ./gradlew assembleDebug
-  - ./gradlew test
+  - ./grpcchat-client/gradlew assembleRelease
+  - ./grpcchat-client/gradlew assembleDebug
+  - ./grpcchat-client/gradlew test
