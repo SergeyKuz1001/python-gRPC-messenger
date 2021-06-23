@@ -35,8 +35,7 @@ before_install:
   - chmod +x ./gradlew
 
 script: 
-  - cd grpcchat-client
   - ls -la
-  - ./gradlew assembleRelease
-  - ./gradlew assembleDebug
-  - ./gradlew test
+  - gradlew assembleRelease
+  - gradlew assembleDebug
+  - gradlew test
