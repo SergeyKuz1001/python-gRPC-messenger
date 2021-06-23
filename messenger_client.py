@@ -3,8 +3,8 @@ import threading
 import os
 import sys
 import datetime
-import messenger_pb2
-import messenger_pb2_grpc
+from shared_proto import messenger_pb2
+from shared_proto import messenger_pb2_grpc
 import PySimpleGUI as sg
 
 

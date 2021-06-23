@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import messenger_pb2
+from shared_proto import messenger_pb2
 import datetime
 import sys
 
