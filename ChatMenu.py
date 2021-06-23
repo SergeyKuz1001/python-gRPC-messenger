@@ -22,9 +22,11 @@ class ChatWindow:
         self.window.Element('-OUTPUT-').TKOut.output.bind("<Key>", lambda e: "break")
 
     def print(self, msg):
+        """ print message in gui in right format """
         print(msg.time.strftime("%D,  %H:%M"), msg.name, ">", msg.message)
         
     def processing(self):
+        """ receive message from gui or handle exit event """
         while True:
             event, values = self.window.read()
 

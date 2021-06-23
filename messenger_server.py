@@ -25,6 +25,7 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         self.serve()
 
     def startMessaging(self, request, context):
+        """ receives client name and starts chat window """
         logging.info(f'got name "{request.name}"')
         if not self.connected:
             self.client_name = request.name
@@ -37,12 +38,14 @@ class Server(messenger_pb2_grpc.MessengerServicer):
             return messenger_pb2.MessengerNameResponse(connected=False)
 
     def stopMessaging(self, request, context):
+        """ disconnects from client and stops server """
         logging.info('disconnected')
         self.connected = False
         self.stop_event.set()
         return messenger_pb2.Empty()
         
-    def sendMessage(self, request_iterator, context):
+    def sendMessage(self, request, context):
+        """ receives messages from gui and send them """
         while self.connected:
             mes = self.main_window.processing()
             self.main_window.print(Message(mes, self.name, datetime.datetime.now(), 'server'))
@@ -50,12 +53,14 @@ class Server(messenger_pb2_grpc.MessengerServicer):
             yield messenger_pb2.MessengerMessage(message=mes)
 
     def getMessage(self, request, context):
+        """ receives messages from client """
         logging.info(f'got message "{request.message}" from {self.client_name}')
         self.main_window.print(Message(request.message, self.client_name, datetime.datetime.now(), 'client'))
         self.messages.append(Message(request.message, self.client_name, datetime.datetime.now(), 'client'))
         return messenger_pb2.Empty()
 
     def serve(self):
+        """ start server """
         self.stop_event = threading.Event()
         server = grpc.server(futures.ThreadPoolExecutor())
         messenger_pb2_grpc.add_MessengerServicer_to_server(self, server)
