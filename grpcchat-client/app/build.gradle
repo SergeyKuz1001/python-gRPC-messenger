@@ -29,6 +29,16 @@ android {
     }
 }
 
+android {
+    sourceSets {
+        main {
+            proto {
+                srcDir '../../shared_proto'
+            }
+        }
+    }
+}
+
 protobuf {
     protoc { artifact = 'com.google.protobuf:protoc:3.12.0' }
     plugins {
