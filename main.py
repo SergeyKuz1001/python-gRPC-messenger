@@ -10,10 +10,13 @@ if __name__ == '__main__':
     parser.add_argument('--port', type=int, help='port')
     args = parser.parse_args()
 
-    if args.mode == 'client' and (not args.host or not args.port):
-        parser.error('host and port must be specified in client mode')
+    if args.mode == 'client' and args.host is None:
+        parser.error('host must be specified in client mode')
+
+    if args.port is None:
+        args.port = 50051
 
     if args.mode == 'server':
-        messenger_server.Server(args.name)
+        messenger_server.Server(args.name, args.port)
     else:
         messenger_client.Client(args.name, args.host, args.port)

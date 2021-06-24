@@ -14,7 +14,7 @@ from message import Message
 
 
 class Server(messenger_pb2_grpc.MessengerServicer):
-    def __init__(self, name):
+    def __init__(self, name, port):
         self.name = name
         self.connected = False
         self.client_name = None
@@ -22,7 +22,7 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         self.main_window = None
         self.stop_event = None
 
-        self.serve()
+        self.serve(port)
 
     def startMessaging(self, request, context):
         """ receives client name and starts chat window """
@@ -62,12 +62,11 @@ class Server(messenger_pb2_grpc.MessengerServicer):
         self.messages.append(Message(request.message, self.client_name, datetime.datetime.now(), 'client'))
         return messenger_pb2.Empty()
 
-    def serve(self):
+    def serve(self, port):
         """ start server """
         self.stop_event = threading.Event()
         server = grpc.server(futures.ThreadPoolExecutor())
         messenger_pb2_grpc.add_MessengerServicer_to_server(self, server)
-        port = "50051"
         server.add_insecure_port(f"[::]:{port}")
         server.start()
         self.stop_event.wait()
