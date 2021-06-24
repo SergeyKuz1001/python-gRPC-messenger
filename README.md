@@ -26,28 +26,24 @@ Client calls *stopMessaging* when client want to disconnect.
 
 ## *How to run?*
 
-1)  Build project:
+  * Server:
 ```
-$ ./build
+$ make simple_server name=$server_name port=$port
 ```
-3)  Run server ...:
+  * Client:
 ```
-$ python main.py --mode server --name $server_name
-```
-... or client:
-```
-$ python main.py --mode client --name $client_name --host $server_host --port $server_port
+$ make simple_client name=$client_name host=$server_host port=$port
 ```
 
 ## *How to run via docker?*
 
-Run server ...:
+  * Server:
 ```
-$ ./run_into_docker server $name $port
+$ make simple_server_docker name=$server_name port=$port
 ```
-... or client:
+  * Client:
 ```
-$ ./run_into_docker client $name $port
+$ make simple_client_docker name=$client_name host=$server_host port=$port
 ```
 
 ## *Android client*
