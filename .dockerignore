@@ -1,4 +1,6 @@
 __pycache__/
-.git/
+.*
 Dockerfile
-.dockerignore
+README.md
+*.png
+grpcchat-client
