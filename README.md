@@ -24,7 +24,7 @@ Client calls *startMessaging* when it want to connect to server, say its name an
 
 Client calls *stopMessaging* when client want to disconnect.
 
-## *How to run?*
+## *How to run in Linux?*
 
   * Server:
 ```
@@ -35,7 +35,7 @@ $ make simple_server name=$server_name port=$port
 $ make simple_client name=$client_name host=$server_host port=$port
 ```
 
-## *How to run via docker?*
+## *How to run in Linux via docker?*
 
   * Server:
 ```
@@ -44,6 +44,24 @@ $ make simple_server_docker name=$server_name port=$port
   * Client:
 ```
 $ make simple_client_docker name=$client_name host=$server_host port=$port
+```
+
+## *How to run in Windows (or in Linux without make)?*
+
+1)  Install requirements:
+```
+$ python -m pip install --upgrade pip
+$ python -m pip install -r requirements.txt
+```
+
+2)  Generate additional files from proto-file:
+```
+$ python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. shared_proto/messenger.proto
+```
+
+3)  Run server or client:
+```
+$ python main.py --mode={server,client} --name=$client_or_server_name --port=$port --host=$server_host_for_client
 ```
 
 ## *Android client*
